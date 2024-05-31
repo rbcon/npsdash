@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPS Scoreboard and Survey Type Chart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .scoreboard {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .chart {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .bar {
+            flex: 1;
+            margin: 0 5px;
+            height: 200px;
+            background-color: lightgray;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .bar-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #4CAF50; /* Green by default */
+        }
+        .bar-fill.passive {
+            background-color: #FFD700; /* Yellow for passive */
+        }
+        .bar-fill.detractor {
+            background-color: #FF6347; /* Red for detractor */
+        }
+        .bar-label {
+            text-align: center;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="scoreboard">
+        <h2>Running NPS Scoreboard</h2>
+        <p id="running-nps">NPS Score: <span id="nps-score">0</span></p>
+    </div>
+
+    <div class="chart-container">
+        <h2>Survey Type Distribution</h2>
+        <div class="chart">
+            <div class="bar" id="promoter-bar">
+                <div class="bar-fill" style="height: 0;"></div>
+                <div class="bar-label">Promoter</div>
+            </div>
+            <div class="bar" id="passive-bar">
+                <div class="bar-fill" style="height: 0;"></div>
+                <div class="bar-label">Passive</div>
+            </div>
+            <div class="bar" id="detractor-bar">
+                <div class="bar-fill" style="height: 0;"></div>
+                <div class="bar-label">Detractor</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to calculate NPS
+        function calculateNPS(promoterCount, passiveCount, detractorCount) {
+            const totalResponses = promoterCount + passiveCount + detractorCount;
+            return ((promoterCount - detractorCount) / totalResponses) * 100 || 0;
+        }
+
+        // Function to update the running NPS scoreboard
+        function updateRunningNPS(nps) {
+            document.getElementById('nps-score').textContent = nps.toFixed(2);
+        }
+
+        // Function to update the survey type distribution chart
+        function updateSurveyTypeChart(promoterCount, passiveCount, detractorCount) {
+            const total = promoterCount + passiveCount + detractorCount;
+            const promoterBar = document.getElementById('promoter-bar');
+            const passiveBar = document.getElementById('passive-bar');
+            const detractorBar = document.getElementById('detractor-bar');
+
+            const maxHeight = 200; // Maximum height of bars (pixels)
+            // Calculate heights for each bar based on counts
+            const promoterHeight = (promoterCount / total) * maxHeight;
+            const passiveHeight = (passiveCount / total) * maxHeight;
+            const detractorHeight = (detractorCount / total) * maxHeight;
+
+            // Update bar heights and labels
+            promoterBar.querySelector('.bar-fill').style.height = promoterHeight + 'px';
+            passiveBar.querySelector('.bar-fill').style.height = passiveHeight + 'px';
+            detractorBar.querySelector('.bar-fill').style.height = detractorHeight + 'px';
+        }
+
+        // Retrieve submissions data from localStorage
+        const submissions = JSON.parse(localStorage.getItem('submissions')) || [];
+        let promoterCount = 0;
+        let passiveCount = 0;
+        let detractorCount = 0;
+
+        // Count survey types
+        submissions.forEach(submission => {
+            if (submission.survey_type === 'Promoter') promoterCount++;
+            else if (submission.survey_type === 'Passive') passiveCount++;
+            else if (submission.survey_type === 'Detractor') detractorCount++;
+        });
+
+        // Calculate NPS
+        const nps = calculateNPS(promoterCount, passiveCount, detractorCount);
+
+        // Update running NPS scoreboard and survey type distribution chart
+        updateRunningNPS(nps);
+        updateSurveyTypeChart(promoterCount, passiveCount, detractorCount);
+    </script>
+</body>
+</html>
