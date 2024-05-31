@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submission and Table Display</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        form {
+            flex: 0 0 300px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: calc(100% - 18px);
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="radio"] {
+            margin-top: 5px;
+            margin-right: 5px;
+        }
+        .radio-group {
+            margin-top: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .radio-group label {
+            margin-right: 15px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .table-container {
+            flex: 1;
+            max-height: 600px;
+            overflow-y: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .action-buttons button {
+            padding: 5px;
+            font-size: 12px;
+            background-color: #f0f0f0;
+            color: black;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .action-buttons button:hover {
+            background-color: #ddd;
+        }
+        .analysis {
+            flex: 0 0 300px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .date-picker {
+            margin-bottom: 20px;
+        }
+        .date-picker label,
+        .date-picker select {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .pagination {
+            margin-top: 20px;
+            align-self: center;
+        }
+        .pagination label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="myForm">
+            <h2>Form Submission</h2>
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+            
+            <label for="case">Case:</label>
+            <input type="text" id="case" name="case" required>
+            
+            <label>POS:</label>
+            <div class="radio-group">
+                <input type="radio" id="ecom" name="pos" value="Ecom" required>
+                <label for="ecom">Ecom</label>
+                <input type="radio" id="app" name="pos" value="App" required>
+                <label for="app">App</label>
+                <input type="radio" id="online_shop" name="pos" value="Online Shop" required>
+                <label for="online_shop">Online Shop</label>
+            </div>
+            
+            <label for="inquiry">Inquiry:</label>
+            <textarea id="inquiry" name="inquiry" required></textarea>
+            
+            <label for="survey_type">Survey Type:</label>
+            <div class="radio-group">
+                <input type="radio" id="promoter" name="survey_type" value="Promoter" required>
+                <label for="promoter">Promoter</label>
+                <input type="radio" id="passive" name="survey_type" value="Passive" required>
+                <label for="passive">Passive</label>
+                <input type="radio" id="detractor" name="survey_type" value="Detractor" required>
+                <label for="detractor">Detractor</label>
+                <input type="radio" id="none" name="survey_type" value="" required>
+                <label for="none">None</label>
+            </div>
+            
+            <button type="submit">Submit</button>
+        </form>
+
+        <div class="table-container">
+            <table id="submission-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Case</th>
+                        <th>POS</th>
+                        <th>Inquiry</th>
+                        <th>Survey Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Table content will be dynamically added here -->
+                </tbody>
+            </table>
+            <div class="pagination">
+                <label for="items-per-page">Items per page:</label>
+                <select id="items-per-page">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                </select>
+                <button id="prev-page">Previous</button>
+                <button id="next-page">Next</button>
+            </div>
+        </div>
+
+        <div class="analysis">
+            <h2>Data Analysis</h2>
+            <div class="date-picker">
+                <label for="filter">Filter by:</label>
+                <select id="filter">
+                    <option value="all">All Time</option>
+                    <option value="month">Month</option>
+                    <option value="date">Date</option>
+                </select>
+                <input type="month" id="month-picker" style="display: none;">
+                <input type="date" id="date-picker" style="display: none;">
+            </div>
+            <p id="promoter-count">Number of Promoters: 0</p>
+            <p id="passive-count">Number of Passives: 0</p>
+            <p id="detractor-count">Number of Detractors: 0</p>
+            <p id="nps-score">NPS Score: 0</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const formObject = {};
+            formData.forEach((value, key) => formObject[key] = value);
+            
+            // Get existing submissions from local storage
+            const submissions = JSON.parse(localStorage.getItem('submissions')) || [];
+            // Add the new submission
+            submissions.push(formObject);
+            // Save back to local storage
+            localStorage.setItem('submissions', JSON.stringify(submissions));
+            
+            document.getElementById('myForm').reset();
+            displaySubmissions();
+            updateAnalysis();
+        });
+
+        document.getElementById('filter').addEventListener('change', function() {
+            const filter = this.value;
+            document.getElementById('month-picker').style.display = filter === 'month' ? 'block' : 'none';
+            document.getElementById('date-picker').style.display = filter === 'date' ? 'block' : 'none';
+            displaySubmissions();
+            updateAnalysis();
+        });
+
+        document.getElementById('month-picker').addEventListener('change', function() {
+            displaySubmissions();
+            updateAnalysis();
+        });
+
+        document.getElementById('date-picker').addEventListener('change', function() {
+            displaySubmissions();
+            updateAnalysis();
+        });
+
+        document.getElementById('items-per-page').addEventListener('change', function() {
+            currentPage = 1;
+            displaySubmissions();
+        });
+
+        document.getElementById('prev-page').addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                displaySubmissions();
+            }
+        });
+
+        document.getElementById('next-page').addEventListener('click', function() {
+            const submissions = getFilteredSubmissions(JSON.parse(localStorage.getItem('submissions')) || []);
+            if ((currentPage * itemsPerPage) < submissions.length) {
+                currentPage++;
+                displaySubmissions();
+            }
+        });
+
+        let currentPage = 1;
+        let itemsPerPage = 5;
+
+        function displaySubmissions() {
+            const tableBody = document.querySelector('#submission-table tbody');
+            tableBody.innerHTML = '';
+            itemsPerPage = parseInt(document.getElementById('items-per-page').value);
+            const submissions = getFilteredSubmissions(JSON.parse(localStorage.getItem('submissions')) || []);
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedSubmissions = submissions.slice(start, end);
+
+            paginatedSubmissions.forEach((submission, index) => {
+                const row = document.createElement('tr');
+                for (const key in submission) {
+                    const cell = document.createElement('td');
+                    cell.textContent = submission[key];
+                    row.appendChild(cell);
+                }
+                const actionsCell = document.createElement('td');
+                actionsCell.classList.add('action-buttons');
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteSubmission(start + index);
+                actionsCell.appendChild(deleteButton);
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.onclick = () => editSubmission(start + index);
+                actionsCell.appendChild(editButton);
+
+                row.appendChild(actionsCell);
+                tableBody.appendChild(row);
+            });
+        }
+
+        function getFilteredSubmissions(submissions) {
+            const filter = document.getElementById('filter').value;
+            const monthPicker = document.getElementById('month-picker').value;
+            const datePicker = document.getElementById('date-picker').value;
+            
+            if (filter === 'all') {
+                return submissions;
+            } else if (filter === 'month') {
+                return submissions.filter(submission => submission.date.startsWith(monthPicker));
+            } else if (filter === 'date') {
+                return submissions.filter(submission => submission.date === datePicker);
+            }
+            return submissions;
+        }
+
+        function updateAnalysis() {
+            const submissions = getFilteredSubmissions(JSON.parse(localStorage.getItem('submissions')) || []);
+            let promoters = 0, passives = 0, detractors = 0;
+            
+            submissions.forEach(submission => {
+                if (submission.survey_type === 'Promoter') promoters++;
+                else if (submission.survey_type === 'Passive') passives++;
+                else if (submission.survey_type === 'Detractor') detractors++;
+            });
+            
+            document.getElementById('promoter-count').textContent = `Number of Promoters: ${promoters}`;
+            document.getElementById('passive-count').textContent = `Number of Passives: ${passives}`;
+            document.getElementById('detractor-count').textContent = `Number of Detractors: ${detractors}`;
+            
+            const totalResponses = promoters + passives + detractors;
+            const nps = ((promoters - detractors) / totalResponses) * 100 || 0;
+            document.getElementById('nps-score').textContent = `NPS Score: ${nps.toFixed(2)}`;
+        }
+
+        function deleteSubmission(index) {
+            const submissions = JSON.parse(localStorage.getItem('submissions')) || [];
+            submissions.splice(index, 1);
+            localStorage.setItem('submissions', JSON.stringify(submissions));
+            displaySubmissions();
+            updateAnalysis();
+        }
+
+        function editSubmission(index) {
+            const submissions = JSON.parse(localStorage.getItem('submissions')) || [];
+            const submission = submissions[index];
+            for (const key in submission) {
+                if (key !== 'survey_type') {
+                    document.getElementById(key).value = submission[key];
+                } else {
+                    document.querySelector(`input[name="survey_type"][value="${submission[key]}"]`).checked = true;
+                }
+            }
+            deleteSubmission(index);
+        }
+
+        // Initial display of submissions and analysis when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            displaySubmissions();
+            updateAnalysis();
+        });
+    </script>
+</body>
+</html>
